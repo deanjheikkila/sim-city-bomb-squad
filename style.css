@@ -1,6 +1,61 @@
-html,
-body {
+/*
+City BG
+Gamespace
+  timer/countdown -> text
+  wires -> imagesx5
+  buttons -disabled at start
+  */
+
+html, body {
   margin: 0;
   padding: 0;
   text-align: center;
+  color: #FFF;
 }
+
+.happy-city {
+  background: url(img/simcity.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.flat-city {
+  background: url(img/explosion.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.game-space {
+  margin-top: 100px;
+  width: 200px;
+  display: inline-block;
+  background: #000000;
+}
+
+.countdown {
+  font-size: 36px;
+}
+
+.countdown-saved {
+  color: rgb(62, 202, 62);
+}
+
+.countdown-panic {
+  color: rgb(199, 43, 43);
+}
+
+.reset {
+  width: 90%;
+  margin: 10px 0;
+  padding: 2px;
+}
+
+
+/*button {
+  display: block;
+  width: 200px;
+}*/
