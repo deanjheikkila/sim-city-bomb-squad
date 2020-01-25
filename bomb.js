@@ -1,36 +1,103 @@
-console.log('loaded!');
+/*-----------------Game State/Global Variables--------------------*/
+let wires = {
+    blue: {
+        cut: false,
+        needsCut: false,
+        cutImage: 'img/cut-blue-wire.png',
+        uncutImage: 'img/uncut-blue-wire.png',
+    },
+    green: {
+        cut: false,
+        needsCut: false,
+        cutImage: 'img/cut-green-wire.png',
+        uncutImage: 'img/uncut-green-wire.png',
+    },
+    red: {
+        cut: false,
+        needsCut: false,
+        cutImage: 'img/cut-red-wire.png',
+        uncutImage: 'img/uncut-red-wire.png',
+    },
+    white: {
+        cut: false,
+        needsCut: false,
+        cutImage: 'img/cut-white-wire.png',
+        uncutImage: 'img/uncut-white-wire.png',
+    },
+    yellow: {
+        cut: false,
+        needsCut: false,
+        cutImage: 'img/cut-yellow-wire.png',
+        uncutImage: 'img/uncut-yellow-wire.png',
+    }
+};
 
-// wire event listener:
-//      changes wire img**
-//      disables future clicks on that wire
-// iterate over wires
-//      assign cut/no cut
-// write win condition/function
-    // find out if all relevant wires have been cut
-    // timer stops
-    // music + cheers
-    // disable wire cutting
-// write lose condition/function
-//      check if wrong wire cut
-//      check if timer goes to zero
-//      background changes**
-//      timer stops
-//      play boom sound**
-//      button shows 'reset'
-//      750 millisecond delay
-// wireclick function
-//      img change
-//      buzzer
-//      check the win function
-//      disable wire click
-// check win value
-    // Return true or false
-    // check the state of wires (iteration)
-// reset function
-    // set background
-    // reset wire images
-    // reset wire state
+const STARTING_TIME = 30;
+let wiresToCut = [];
+
+
+/*------------------Functions-----------------------*/
+let gameInit = function() {
+    let domWires = document.querySelectorAll('img');
+    let domTimer = document.querySelector('.countdown');
+    let domResetBtn = document.querySelector('.reset');
+    wiresToCut = [];
     // reset timer
-    // disable reset button
-    // sirens
-// game init ?
+    remainingTime = STARTING_TIME;
+    // reset wire images
+    for (let i=0; i< 5; i++){
+        domWires[i].src = `img/uncut-${domWires[i].id}-wire.png`;
+    }
+    // disable button
+    domResetBtn.disabled = true;
+    // reset background
+    document.querySelector('body').classList.remove('flat-city');
+    document.querySelector('body').classList.add('happy-city');
+    // set wires to be cut
+    for (wire in wires) {
+        let rand = Math.random();
+        if (rand > 0.5) {
+            wiresToCut.push(wire);
+        }
+    }
+    console.log(wiresToCut);
+    // start countdown
+    // play siren
+}
+
+
+let wireClickHandler = function(e) {
+    //check if wire has been cut
+    if (!wires[e.target.id].cut) {
+        wires[e.target.id].cut = true;
+        //      change img
+        e.target.src = wires[e.target.id].cutImage;
+        // check if its in wires to cut
+        let wireIndex = wiresToCut.indexOf(e.target.id);
+        if (wireIndex > -1) {
+            console.log('good so far');
+            //take out of wires to cut
+            wiresToCut.splice(wireIndex, 1);
+            // run checkwin
+            checkWin();
+        } else {
+            // run loser()
+            console.log("KABOOM");
+            
+        }
+    //play buzz
+    }
+};
+
+let checkWin = function() {
+    // iterate over wires
+        // check to see if needsCut wires are cut
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // DOM References
+    
+    document.querySelector('.wires').addEventListener('click', wireClickHandler);
+    
+    gameInit();
+});
