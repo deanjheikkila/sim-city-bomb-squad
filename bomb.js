@@ -33,14 +33,18 @@ let wires = {
 };
 
 const STARTING_TIME = 30;
+let remainingTime = STARTING_TIME;
 let wiresToCut = [];
-
+let countdown = null; // assigns to null so countdown doesnt start immediately
+let delay = null;
+let gameOver = true;
 
 /*------------------Functions-----------------------*/
 let gameInit = function() {
     let domWires = document.querySelectorAll('img');
     let domTimer = document.querySelector('.countdown');
     let domResetBtn = document.querySelector('.reset');
+    gameOver = false;
     wiresToCut = [];
     // reset timer
     remainingTime = STARTING_TIME;
@@ -60,15 +64,45 @@ let gameInit = function() {
             wiresToCut.push(wire);
         }
     }
+    // TODO: check no win scenarios and re-run wire loop
     console.log(wiresToCut);
     // start countdown
+    countdown = setInterval(updateClock, 1000);
     // play siren
 }
 
+let endGame = function(win) {
+    // check if win
+    clearInterval(countdown);
+    clearTimeout(delay);
+    gameOver = true;
+    document.querySelector('.reset').disabled = false;
+    if (win) {
+        //TODO savior stuff
+        console.log("Hurray!");
+    } else {
+        console.log("KABOOOOOM");
+        document.body.classList.remove("happy-city");
+        document.body.classList.add("flat-city");
+    }
+}
+
+let updateClock = function() {
+    // TODO: countdown in miliseconds
+    // decrease the value of remaining time
+    remainingTime--;
+    if (remainingTime <= 0) {
+        //end game as loser
+        endGame(false);
+    }
+    document.querySelector('.countdown').textContent = `00:00:${remainingTime < 10 ?'0'+remainingTime:remainingTime}`;
+
+}
 
 let wireClickHandler = function(e) {
-    //check if wire has been cut
-    if (!wires[e.target.id].cut) {
+    //check if wire has been cut and if game is not over
+    if (!wires[e.target.id].cut && !gameOver) {
+        // tell js we've cut the wire
         wires[e.target.id].cut = true;
         //      change img
         e.target.src = wires[e.target.id].cutImage;
@@ -78,26 +112,26 @@ let wireClickHandler = function(e) {
             console.log('good so far');
             //take out of wires to cut
             wiresToCut.splice(wireIndex, 1);
-            // run checkwin
-            checkWin();
+            // check if wires to cut.length === 0
+            if (wiresToCut.length === 0) {
+                endGame(true);
+            }
         } else {
             // run loser()
-            console.log("KABOOM");
-            
+            delay = setTimeout(function () {
+                console.log("Yikes, 750ms left");
+                endGame(false);
+            }, 750);
         }
     //play buzz
     }
 };
 
-let checkWin = function() {
-    // iterate over wires
-        // check to see if needsCut wires are cut
-}
 
 document.addEventListener('DOMContentLoaded', function() {
     // DOM References
     
+    gameInit();
     document.querySelector('.wires').addEventListener('click', wireClickHandler);
     
-    gameInit();
 });
