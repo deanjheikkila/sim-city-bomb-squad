@@ -44,6 +44,8 @@ let gameInit = function() {
     let domWires = document.querySelectorAll('img');
     let domTimer = document.querySelector('.countdown');
     let domResetBtn = document.querySelector('.reset');
+    document.getElementById("success").pause();
+    document.getElementById("success").currentTime = 0;
     gameOver = false;
     wiresToCut = [];
     // reset timer
@@ -51,12 +53,16 @@ let gameInit = function() {
     // reset wire images
     for (let i=0; i< 5; i++){
         domWires[i].src = `img/uncut-${domWires[i].id}-wire.png`;
+        wires[domWires[i].id].cut = false;
     }
     // disable button
-    domResetBtn.disabled = true;
+    domResetBtn.style.visibility = "hidden";
     // reset background
     document.querySelector('body').classList.remove('flat-city');
     document.querySelector('body').classList.add('happy-city');
+    // make countdown red
+    domTimer.classList.remove('countdown-saved');
+    domTimer.classList.add('countdown-panic');
     // set wires to be cut
     for (wire in wires) {
         let rand = Math.random();
@@ -66,9 +72,10 @@ let gameInit = function() {
     }
     // TODO: check no win scenarios and re-run wire loop
     console.log(wiresToCut);
+    // play siren
+    document.getElementById("siren").play();
     // start countdown
     countdown = setInterval(updateClock, 1000);
-    // play siren
 }
 
 let endGame = function(win) {
@@ -76,14 +83,22 @@ let endGame = function(win) {
     clearInterval(countdown);
     clearTimeout(delay);
     gameOver = true;
-    document.querySelector('.reset').disabled = false;
+    document.querySelector('.reset').style.visibility = "visible";
+    document.getElementById("siren").pause();
     if (win) {
         //TODO savior stuff
         console.log("Hurray!");
+        document.querySelector('.countdown').classList.remove('countdown-panic');
+        document.querySelector('.countdown').classList.add('countdown-saved');
+        // talk sounds
+        document.getElementById("yay").play();
+        document.getElementById("success").play();
     } else {
         console.log("KABOOOOOM");
         document.body.classList.remove("happy-city");
         document.body.classList.add("flat-city");
+        // play kaboom sound
+        document.getElementById("explode").play();
     }
 }
 
@@ -100,6 +115,8 @@ let updateClock = function() {
 }
 
 let wireClickHandler = function(e) {
+    //play buzz
+    document.getElementById("buzz").play();
     //check if wire has been cut and if game is not over
     if (!wires[e.target.id].cut && !gameOver) {
         // tell js we've cut the wire
@@ -123,7 +140,6 @@ let wireClickHandler = function(e) {
                 endGame(false);
             }, 750);
         }
-    //play buzz
     }
 };
 
@@ -132,6 +148,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // DOM References
     
     gameInit();
+    // document.addEventListener('mousemove', function() {
+    //     document.getElementById("siren").play();
+    // });
     document.querySelector('.wires').addEventListener('click', wireClickHandler);
-    
+    document.querySelector(".reset").addEventListener("click", gameInit);
 });
